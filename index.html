@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yavrum</title>
+    <link rel="icon" type="image/png" href="images/bas.png">
+    <style>
+        /* Reset ve Temel Stiller */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: center;
+            overflow-x: hidden;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Sayfa Stilleri */
+        .page {
+            min-height: 100vh;
+            min-height: 100dvh; /* Mobil tarayıcılar için */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        /* Sayfa 1 için özel stil */
+        #page1 {
+                background-image: url('images/ana.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Diğer sayfalar için pembe arka plan */
+        #page2,
+        #page3,
+        #page4 {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+
+        /* Overlay (sadece page1 için) */
+        #page1::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.3));
+            z-index: 1;
+        }
+
+        /* Metinleri overlay'in üzerine çıkar */
+        #page1 > *,
+        #page1 .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Sayfa 1 ve Sayfa 3 için özel ortalama */
+        #page1 .content-wrapper,
+        #page3 .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Başlık Stilleri */
+        .page h1, .page h2 {
+            font-size: clamp(2rem, 8vw, 4rem);
+            margin: 0 0 20px 0;
+            padding: 0 15px;
+            line-height: 1.2;
+            font-weight: 700;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Paragraf Stilleri */
+        .page p {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            margin: 10px 0 20px;
+            padding: 0 20px;
+            line-height: 1.6;
+            max-width: 800px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Sayfa 1 ve 3 için özel paragraf stilleri */
+        #page1 p,
+        #page3 p {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Sayfa 2 için Fotoğraf Grid - RESPONSIVE AYARLARI */
+        #page2 .photos {
+            display: grid;
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* Çok Büyük Ekranlar (1600px+) - 6 resim 3x2 grid */
+        @media (min-width: 1600px) {
+            #page2 .photos {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(2, 1fr);
+                gap: 25px;
+            }
+        }
+
+        /* Büyük Masaüstü (1200px - 1599px) - 6 resim 3x2 grid */
+        @media (min-width: 1200px) and (max-width: 1599px) {
+            #page2 .photos {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(2, 1fr);
+                gap: 20px;
+                max-width: 1100px;
+            }
+        }
+
+        /* Orta Boy Masaüstü/Tablet (992px - 1199px) - 6 resim 3x2 grid */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            #page2 .photos {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(2, 1fr);
+                gap: 18px;
+                max-width: 900px;
+            }
+        }
+
+        /* Küçük Masaüstü/Büyük Tablet (768px - 991px) - 6 resim 3x2 grid */
+        @media (min-width: 768px) and (max-width: 991px) {
+            #page2 .photos {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(2, 1fr);
+                gap: 15px;
+                max-width: 700px;
+            }
+        }
+
+        /* Küçük Tablet (576px - 767px) - 6 resim 2x3 grid */
+        @media (min-width: 576px) and (max-width: 767px) {
+            #page2 .photos {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 15px;
+                max-width: 500px;
+            }
+        }
+
+        /* Mobil (480px - 575px) - 6 resim 2x3 grid (daha küçük gap) */
+        @media (min-width: 480px) and (max-width: 575px) {
+            #page2 .photos {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 12px;
+                max-width: 450px;
+            }
+        }
+
+        /* Küçük Mobil (320px - 479px) - 6 resim alt alta (1 sütun) */
+        @media (min-width: 320px) and (max-width: 479px) {
+            #page2 .photos {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(6, auto);
+                gap: 15px;
+                max-width: 300px;
+            }
+        }
+
+        /* Çok Küçük Mobil (0 - 319px) - 6 resim alt alta (1 sütun) */
+        @media (max-width: 319px) {
+            #page2 .photos {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(6, auto);
+                gap: 12px;
+                max-width: 280px;
+            }
+        }
+
+        /* Fotoğraf Stilleri */
+        #page2 .photos img {
+            width: 100%;
+            height: 100%;
+            min-height: 200px;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            display: block;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        }
+
+        #page2 .photos img:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Kalp ve çiçek efekti */
+        .heart-emoji {
+            position: fixed;
+            font-size: clamp(20px, 5vw, 28px);
+            animation: floatUp 1.5s ease-in-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-150px) scale(0.5) rotate(180deg);
+            }
+        }
+
+        /* Video Container */
+        .video-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto 0;
+            padding: 0 15px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-wrapper iframe,
+.video-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+        .italic-text {
+            font-style: italic;
+            color: white;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            margin-top: 15px;
+            text-align: center;
+            padding: 0 15px;
+        }
+
+        /* Gizleme Sınıfı */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Butonlar */
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+            z-index: 999;
+            gap: 10px;
+        }
+
+        .nav-buttons button,
+        #startBtn {
+            padding: clamp(12px, 3vw, 15px) clamp(20px, 4vw, 30px);
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff7eb3, #ff758c);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            min-width: 140px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .nav-buttons button:hover,
+        #startBtn:hover {
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .nav-buttons button:active,
+        #startBtn:active {
+            transform: translateY(0);
+        }
+
+        /* Başla Butonu için özel stil */
+        #startBtn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+        }
+
+        /* Mobil için buton düzeni */
+        @media (max-width: 480px) {
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .nav-buttons button {
+                width: 90%;
+                max-width: 300px;
+            }
+        }
+
+        /* İçerik Wrapper */
+        .content-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Sayfa 2 için özel içerik wrapper ayarı */
+        #page2 .content-wrapper {
+            justify-content: flex-start;
+            padding-top: 40px;
+            padding-bottom: 60px;
+            min-height: 100vh;
+        }
+
+        /* Sayfa 2 başlık için özel stil */
+        #page2 h2 {
+            margin-bottom: 30px !important;
+        }
+
+        /* Touch cihazlar için iyileştirmeler */
+        @media (hover: none) and (pointer: coarse) {
+            #page2 .photos img:hover {
+                transform: none;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            }
+            
+            .nav-buttons button:hover,
+            #startBtn:hover {
+                transform: none;
+            }
+        }
+
+        /* Yüksek çözünürlük için */
+        @media (min-width: 1920px) {
+            .container {
+                max-width: 1600px;
+            }
+            
+            .page h1, .page h2 {
+                font-size: 5rem;
+            }
+            
+            .page p {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Landscape mod için özel ayarlar */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .page {
+                padding: 10px;
+                min-height: 100vh;
+            }
+            
+            .page h1, .page h2 {
+                font-size: clamp(1.5rem, 4vw, 2.5rem);
+                margin-bottom: 10px;
+            }
+            
+            .page p {
+                font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+                margin: 5px 0 10px;
+            }
+            
+            #page2 .photos {
+                gap: 10px;
+                margin: 10px auto;
+            }
+            
+            #page2 .photos img {
+                min-height: 150px;
+            }
+        }
+
+        /* Yüksek kontrast modu desteği */
+        @media (prefers-contrast: high) {
+            .page h1, .page h2, .page p {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            }
+            
+            #page2 .photos img {
+                border: 3px solid white;
+            }
+        }
+
+        /* Karanlık mod desteği */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #121212;
+            }
+            
+            #page2 .photos img {
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sayfa 1: Açılış Ekranı -->
+        <section class="page" id="page1">
+            <div class="content-wrapper">
+                <h1>Ecem'm</h1>
+                <p>Bugün ve her gün, sen benim için özelsin.</p>
+                <button id="startBtn">Başla</button>
+            </div>
+        </section>
+
+        <!-- Sayfa 2: Anılarımız -->
+        <section class="page hidden" id="page2">
+            <div class="content-wrapper">
+                <h2>Yeryüzündeki Cennet</h2>
+                <div class="photos">
+                    <img src="images/1.jpeg" alt="Anımız 1" loading="lazy">
+                    <img src="images/2.jpeg" alt="Anımız 2" loading="lazy">
+                    <img src="images/3.jpeg" alt="Anımız 3" loading="lazy">
+                    <img src="images/4.jpeg" alt="Anımız 4" loading="lazy">
+                    <img src="images/5.jpeg" alt="Anımız 5" loading="lazy">
+                    <img src="images/6.jpeg" alt="Anımız 6" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- Sayfa 3: Sevgili Mesajı -->
+        <section class="page hidden" id="page3">
+            <div class="content-wrapper">
+                <h2>Yavrum,</h2>
+                <p>
+                    Tanrı’nın bana verdiği en güzel şey sensin.
+                    Seni her şeyden, kendimden bile çok seviyorum.
+                </p>
+                <p>
+                    Bugün ve her gün, seninleyim. İyi ki varsın.
+                    Seni çok seviyorum.
+                </p>
+            </div>
+        </section>
+
+        <!-- Sayfa 4: YouTube Videosu -->
+        <section class="page hidden" id="page4">
+    <div class="content-wrapper">
+        <h2>Seni Hatırlatan Şarkı</h2>
+        <div class="video-container">
+            <div class="video-wrapper">
+                <video controls>
+                    <source src="videos/video.mp4" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                </video>
+            </div>
+            <p class="italic-text">"Dünyanın En Güzel Kızı..."</p>
+        </div>
+    </div>
+</section>
+
+
+        <!-- Butonlar -->
+        <div class="nav-buttons">
+            <button id="prevBtn">Önceki Sayfa</button>
+            <button id="nextBtn">Sonraki Sayfa</button>
+        </div>
+    </div>
+
+    <script>
+        // Sayfa Geçişleri
+        const pages = document.querySelectorAll('.page');
+        const startBtn = document.getElementById('startBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let currentPage = 0;
+
+        // Butonları Gizleme Fonksiyonu
+        function hideButtons() {
+            if (currentPage === 0) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            } else if (currentPage === 3) {
+                nextBtn.style.display = 'none';
+                prevBtn.style.display = 'block';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+            }
+        }
+
+        // Sayfa Geçiş Fonksiyonu
+        function goToPage(pageIndex) {
+            if (pageIndex >= 0 && pageIndex < pages.length) {
+                pages[currentPage].classList.add('hidden');
+                currentPage = pageIndex;
+                pages[currentPage].classList.remove('hidden');
+                hideButtons();
+                
+                // Mobilde geçiş sonrası sayfanın başına scroll et
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Başla Butonu
+        startBtn.addEventListener('click', () => {
+            goToPage(1);
+        });
+
+        // Sonraki Sayfa Butonu
+        nextBtn.addEventListener('click', () => {
+            goToPage(currentPage + 1);
+        });
+
+        // Önceki Sayfa Butonu
+        prevBtn.addEventListener('click', () => {
+            goToPage(currentPage - 1);
+        });
+
+        // İlk yüklemede butonları ayarla
+        hideButtons();
+
+        // Fotoğraf tıklama efekti (Kalp emojileri)
+        const photos = document.querySelectorAll('.photos img');
+        photos.forEach(photo => {
+            photo.addEventListener('click', (event) => {
+                const rect = photo.getBoundingClientRect();
+                const count = window.innerWidth < 768 ? 10 : 15; // Mobilde daha az kalp
+                
+                for (let i = 0; i < count; i++) {
+                    createEmoji(
+                        '💗',
+                        rect.left + Math.random() * rect.width,
+                        rect.top + Math.random() * rect.height
+                    );
+                }
+            });
+        });
+
+        // Emoji oluşturma fonksiyonu
+        function createEmoji(emoji, x, y) {
+            const emojiElement = document.createElement('div');
+            emojiElement.classList.add('heart-emoji');
+            emojiElement.textContent = emoji;
+            emojiElement.style.left = `${x}px`;
+            emojiElement.style.top = `${y}px`;
+            
+            // Rastgele boyut ve animasyon süresi
+            const size = Math.random() * 20 + 20;
+            emojiElement.style.fontSize = `${size}px`;
+            
+            document.body.appendChild(emojiElement);
+
+            setTimeout(() => {
+                emojiElement.remove();
+            }, 1500);
+        }
+
+        // Sayfalara tıklama efekti
+        const page1 = document.getElementById('page1');
+        const page3 = document.getElementById('page3');
+        const page4 = document.getElementById('page4');
+
+        function handlePageClick(event, emoji) {
+            const count = window.innerWidth < 768 ? 15 : 25;
+            
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = Math.random() * 100 + 50;
+                
+                createEmoji(
+                    emoji,
+                    event.clientX + Math.cos(angle) * distance,
+                    event.clientY + Math.sin(angle) * distance
+                );
+            }
+        }
+
+        // Tıklama event'larını ekle
+        page1.addEventListener('click', (event) => handlePageClick(event, '🤍'));
+        page3.addEventListener('click', (event) => handlePageClick(event, '❤️'));
+        page4.addEventListener('click', (event) => handlePageClick(event, '🌸'));
+
+        // Klavye navigasyonu
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowLeft' && currentPage > 0) {
+                goToPage(currentPage - 1);
+            } else if (event.key === 'ArrowRight' && currentPage < pages.length - 1) {
+                goToPage(currentPage + 1);
+            }
+        });
+
+        // Resim yükleme hatalarını yakala
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.opacity = '0.5';
+                this.style.filter = 'grayscale(100%)';
+                console.error('Resim yüklenemedi:', this.src);
+            });
+        });
+
+        // Pencere boyutu değiştiğinde butonları yeniden ayarla
+        window.addEventListener('resize', hideButtons);
+        
+        // Sayfa yüklendiğinde mobil tarayıcı için viewport ayarı
+        window.addEventListener('load', function() {
+            // iOS Safari için viewport düzeltmesi
+            if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+                document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0');
+            }
+            
+            // 2. sayfadaki resimlerin boyutunu console'a yazdır (debug için)
+            console.log(`Ekran boyutu: ${window.innerWidth}px x ${window.innerHeight}px`);
+            console.log(`2. sayfa grid düzeni: ${getComputedStyle(document.querySelector('#page2 .photos')).gridTemplateColumns}`);
+        });
+    </script>
+</body>
+</html>
